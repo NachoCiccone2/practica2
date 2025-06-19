@@ -1,5 +1,5 @@
 /**
- * Alumno:……………………………….                    Fecha:……………………………
+ * Alumno:Ignacio Ciccone.                    Fecha:19/06/2025
     1) Una agencia de reparto posee dos canales para recibir pedidos, uno es 
     la página web de la empresa y el otro un operador que atiende la línea 
     telefónica. La operatoria es que al finalizar el horario de toma de 
@@ -12,11 +12,11 @@
     • Origen(texto)
     • Destino(texto)
 
-La capacidad de reparto varía según cuántos móviles disponga la empresa en el 
-momento y las horas que se dispongan para realizar repartos, por lo cual la 
-cantidad máxima de pedidos que puede tener el listado unificado resultará de 
-un cálculo: 
-Pedidos_Max = Móviles * Horas_Reparto * 3
+    La capacidad de reparto varía según cuántos móviles disponga la empresa en el 
+    momento y las horas que se dispongan para realizar repartos, por lo cual la 
+    cantidad máxima de pedidos que puede tener el listado unificado resultará de 
+    un cálculo: 
+    Pedidos_Max = Móviles * Horas_Reparto * 3
 
     a. Definir las estructuras necesarias para el enunciado descrito y para 
     los puntos siguientes:
@@ -26,26 +26,196 @@ Pedidos_Max = Móviles * Horas_Reparto * 3
     máxima.
     c. Realizar diagrama de un procedimiento que reciba el listado de pedidos 
     a realizar en el día y genere el siguiente listado agrupado por hora del pedido recibido:
-HORA	LIVIANOS	MEDIO		PESADO	TOTAL X HORA
-  6		2	        0		            1			         3
-    d. Al finalizar el listado imprimir los siguientes datos de reporte:
-TOTAL LIVIANOS: 99 	TOTAL MEDIO: 99	TOTAL PESADOS: 99
-HORA CON MENOS ENVIOS: 13
+    HORA	LIVIANOS	MEDIO		PESADO	    TOTAL X HORA
+    6		2	        0		     1	        3
 
-Consideraciones: Los listados de ambos canales de atención se encuentran 
-ordenados en forma ascendente por hora de pedido.
-Restricciones: Solo se puede recorrer secuencialmente una vez cada vector
+    d. Al finalizar el listado imprimir los siguientes datos de reporte:
+    TOTAL LIVIANOS: 99 	TOTAL MEDIO: 99	TOTAL PESADOS: 99
+    HORA CON MENOS ENVIOS: 13
+
+    Consideraciones: Los listados de ambos canales de atención se encuentran 
+    ordenados en forma ascendente por hora de pedido.
+    Restricciones: Solo se puede recorrer secuencialmente una vez cada vector
 
     2) Realizar diagrama del procedimiento intersección que dados dos arreglos 
     de entrada uno de N y otro de M elementos genere un nuevo arreglo de 
     salida sólo con los elementos que  están en ambos conjuntos ordenado en 
     forma ascendente. 
-Ejemplo: vecA = {0, 2, 4, 9} y vecB = {9, 5, 3, 2, 1) => vecC = {2, 9} 
+    Ejemplo: vecA = {0, 2, 4, 9} y vecB = {9, 5, 3, 2, 1) => vecC = {2, 9} 
 
-Consideraciones: Ambos arreglos de entrada están ordenados pero el primero 
-en forma ascendente y el segundo en forma descendente. Ambos son conjuntos 
-sin elementos repetidos 
-Restricciones: Sólo se puede recorrer una vez cada vector de entrada
-
- * 
+    Consideraciones: Ambos arreglos de entrada están ordenados pero el primero 
+    en forma ascendente y el segundo en forma descendente. Ambos son conjuntos 
+    sin elementos repetidos 
+    Restricciones: Sólo se puede recorrer una vez cada vector de entrada
  */
+
+const int TIPO_PAQUETE_LIVIANO = 1;
+const int TIPO_PAQUETE_MEDIO = 2;
+const int TIPO_PAQUETE_PESADO = 3;
+
+const int MAX_CANT_PEDIDOS = 100;
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct PEDIDO {
+    int hora;
+    long codigo_cliente;
+    int tipo_paquete;
+    string origen;
+    string destino;
+};
+
+int carga_de_pedidos (PEDIDO pedidos[]){
+    int bandera = 1;
+    int i = 0;
+    int cantidad_pedidos = 0;
+
+    //cout << "CARGA DE DATOS" << endl;
+    while (bandera == 1 && i<MAX_CANT_PEDIDOS){
+        int hora;
+        long codigo_cliente;
+        int tipo_paquete;
+        string origen;
+        string destino;
+        cout << "Ingrese la hora del pedido en formato HHMM: ";
+        cin >> hora;
+        cout << "Ingrese el codigo del cliente: ";
+        cin >> codigo_cliente;
+        cout << "Ingrese el tipo de paquete (1_ liviano, 2_ medio, 3_pesado): ";
+        cin >> tipo_paquete;
+        cout << "Ingrese el origen del envio: ";
+        getline(cin, origen);
+        cout << "Ingrese el destino del envio: ";
+        getline(cin, destino);
+        
+        /* Aca puede haber verificacion de datos */
+        
+        pedidos[i].hora = hora;
+        pedidos[i].codigo_cliente = codigo_cliente;
+        pedidos[i].tipo_paquete = tipo_paquete;
+        pedidos[i].origen = origen;
+        pedidos[i].destino = destino;
+        i++;
+        cout << "Desea seguir cargando datos?(1: si, 0: no): ";
+        cin >> bandera;
+    }
+
+    cantidad_pedidos = i;
+    return cantidad_pedidos;
+}
+
+void unificacion_de_listados(PEDIDO pedidos_web[], PEDIDO pedidos_telefonicos[], PEDIDO pedidos_a_atender[], PEDIDO pedidos_rechazados[],  int cant_pedidos_web , int cant_pedidos_telefonicos, int &cant_pedidos_a_atender, int &cant_pedidos_rechazados)
+{
+    /*
+        i: indice de pedidos_Web
+        j: indice de pedidos_telefonicos
+        k: indice de pedidos_a_atender
+        l: indice de pedidos_rechazados
+    */
+    int i=0,j=0,k=0,l=0;
+
+    while(i<cant_pedidos_web && j<cant_pedidos_telefonicos){
+        if(k<MAX_CANT_PEDIDOS){
+            if(pedidos_web[i].hora <= pedidos_telefonicos[j].hora){
+                pedidos_a_atender[k] = pedidos_web[i];
+                i++;
+            } else {
+                pedidos_a_atender[k] = pedidos_telefonicos[j];
+                j++;
+            }
+            k++;
+        } else {
+            if(pedidos_web[i].hora <= pedidos_telefonicos[j].hora){
+                pedidos_rechazados[l] = pedidos_web[i];
+                i++;
+            } else {
+                pedidos_rechazados[l] = pedidos_telefonicos[j];
+                j++;
+            }
+            l++;
+        }
+    }
+
+    while(i<cant_pedidos_web){
+        if(k<MAX_CANT_PEDIDOS){
+            pedidos_a_atender[k] = pedidos_web[i];
+            i++;
+            k++;
+        } else {
+            pedidos_rechazados[l] = pedidos_web[i];
+            i++;
+            l++;
+        }
+    }
+
+    while(j<cant_pedidos_telefonicos){
+        if(k<MAX_CANT_PEDIDOS){
+            pedidos_a_atender[k] = pedidos_telefonicos[j];
+            j++;
+            k++;
+        } else {
+            pedidos_rechazados[l] = pedidos_telefonicos[j];
+            j++;
+            l++;
+        }
+    }
+
+    cant_pedidos_a_atender = k;
+    cant_pedidos_rechazados = l;
+}
+
+void mostrar_pedidos(PEDIDO pedidos[], int cant_pedidos){
+    for(int i=0;i<cant_pedidos;i++){
+        string tipo_paquete;
+        switch (pedidos[i].tipo_paquete){
+            case TIPO_PAQUETE_LIVIANO:
+                tipo_paquete = "liviano";
+                break;
+            
+            case TIPO_PAQUETE_MEDIO:
+                tipo_paquete = "medio";
+                break;
+
+            case TIPO_PAQUETE_PESADO:
+                tipo_paquete = "pesado";
+                break;
+
+            default:
+                break;
+        }
+        cout << "\nPedido numero " << i+1 << ": " << endl;
+        cout << "Hora del pedido: " << pedidos[i].hora << endl;
+        cout << "Codigo del cliente: " << pedidos[i].codigo_cliente << endl;
+        cout << "Tipo de paquete: " << tipo_paquete << endl;
+        cout << "Origen del pedido: " << pedidos[i].origen << endl;
+        cout << "Destino del pedido: " << pedidos[i].destino << endl;
+    }
+}
+
+int main (){
+    PEDIDO pedidos_web[MAX_CANT_PEDIDOS];
+    PEDIDO pedidos_telefonicos[MAX_CANT_PEDIDOS];
+    PEDIDO pedidos_a_atender[MAX_CANT_PEDIDOS];
+    PEDIDO pedidos_rechazados[MAX_CANT_PEDIDOS];
+    int cant_pedidos_web, cant_pedidos_telefonicos, cant_pedidos_a_atender, cant_pedidos_rechazados;
+
+    cout << "\n********************* CARGA DE PEDIDOS WEB *********************" << endl;
+    cant_pedidos_web = carga_de_pedidos(pedidos_web);
+    cout << "\n************************* PEDIDOS WEB *************************" << endl;
+    mostrar_pedidos(pedidos_web, cant_pedidos_web);
+    cout << "\n***************** CARGA DE PEDIDOS TELEFONICOS *****************" << endl;
+    cant_pedidos_telefonicos = carga_de_pedidos(pedidos_telefonicos);
+    cout << "\n********************* PEDIDOS TELEFONICOS **********************" << endl;
+    mostrar_pedidos(pedidos_telefonicos, cant_pedidos_telefonicos);
+
+    cout << "\n********************* UNIFICANDO PEDIDOS *********************" <<endl;
+    unificacion_de_listados(pedidos_web, pedidos_telefonicos, pedidos_a_atender, pedidos_rechazados, cant_pedidos_web , cant_pedidos_telefonicos, cant_pedidos_a_atender, cant_pedidos_rechazados);
+    cout << "\n********************** PEDIDOS A ATENDER **********************" << endl;
+    mostrar_pedidos(pedidos_a_atender, cant_pedidos_a_atender);
+    cout << "\n********************** PEDIDOS RECHAZADOS **********************" << endl;
+    mostrar_pedidos(pedidos_rechazados, cant_pedidos_rechazados);
+
+    return 0;
+}
