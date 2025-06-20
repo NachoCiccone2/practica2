@@ -41,8 +41,8 @@
 const int TIPO_PAQUETE_LIVIANO = 1;
 const int TIPO_PAQUETE_MEDIO = 2;
 const int TIPO_PAQUETE_PESADO = 3;
-
-const int MAX_CANT_PEDIDOS = 100;
+/**************************************ACA MODIFICO CANT MAX PARA PROBAR LOS RECHAZADOS******************************************************/
+const int MAX_CANT_PEDIDOS = 4;
 #include <iostream>
 #include <string>
 
@@ -344,8 +344,8 @@ void ejercicio2 (){
 }
 
 int main (){
-    //ejercicio1();
-    ejercicio2();
+    ejercicio1();
+    //ejercicio2();
 
     return 0;
 }
