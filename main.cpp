@@ -85,6 +85,7 @@ int carga_de_pedidos (PEDIDO pedidos[]){
         cin >> codigo_cliente;
         cout << "Ingrese el tipo de paquete (1_ liviano, 2_ medio, 3_pesado): ";
         cin >> tipo_paquete;
+        cin.ignore();
         cout << "Ingrese el origen del envio: ";
         getline(cin, origen);
         cout << "Ingrese el destino del envio: ";
@@ -100,6 +101,10 @@ int carga_de_pedidos (PEDIDO pedidos[]){
         i++;
         cout << "Desea seguir cargando datos?(1: si, 0: no): ";
         cin >> bandera;
+
+        if(i == MAX_CANT_PEDIDOS){
+            cout<< "No se pueden cargar mas datos para esta instancia." << endl;
+        }
     }
 
     cantidad_pedidos = i;
@@ -192,6 +197,113 @@ void mostrar_pedidos(PEDIDO pedidos[], int cant_pedidos){
         cout << "Origen del pedido: " << pedidos[i].origen << endl;
         cout << "Destino del pedido: " << pedidos[i].destino << endl;
     }
+    if(cant_pedidos==0){
+        cout<<"No hay pedidos para mostrar"<<endl;
+    }
+}
+
+void print_listado(int hora, int cant_livianos, int cant_medio, int cant_pesados){
+    int cant_total = cant_livianos + cant_medio + cant_pesados;
+    cout<< "\nHORA	LIVIANOS	MEDIO		PESADO	    TOTAL X HORA" << endl;
+    cout << hora << "	" << cant_livianos << "       	" << cant_medio << "    		" << cant_pesados << "     	    " << cant_total << endl;
+    return;
+}
+
+void mostrar_listado_por_hora(PEDIDO pedidos[], int cant_pedidos){
+    int cant_livianos = 0, cant_medio = 0, cant_pesados = 0;
+    int i=0;
+    bool bandera_fin_array = true;
+    //cout<< "ingreso a 'mostrar_listado_por_hora'" << endl;
+
+    for(int hora=6; hora<13; hora++){
+        //cout<< "hora: " << hora << endl;
+        //cout<< "(pedidos[" << i << "].hora/100): " << (pedidos[i].hora/100) << endl;
+        while( (pedidos[i].hora/100) == hora && bandera_fin_array){
+            //cout<< "Dentro del while "<< endl;
+            switch (pedidos[i].tipo_paquete){
+                case TIPO_PAQUETE_LIVIANO:
+                    cant_livianos++;
+                    break;
+                
+                case TIPO_PAQUETE_MEDIO:
+                    cant_medio++;
+                    break;
+
+                case TIPO_PAQUETE_PESADO:
+                    cant_pesados++;
+                    break;
+
+                default:
+                    break;
+            }
+            //cout<< "pedidos[" << i << "].tipo_paquete: " << pedidos[i].tipo_paquete << endl;
+            //cout<< "cant_livianos: " << cant_livianos << endl;
+            //cout<< "cant_medio: " << cant_medio << endl;
+            //cout<< "cant_pesados: " << cant_pesados << endl;
+            i++;
+            if(i == cant_pedidos){
+                //cout<< "Dentro de ' if(i == cant_pedidos) ' "<< endl;
+                bandera_fin_array = false;
+                print_listado(hora, cant_livianos, cant_medio, cant_pesados);
+            }
+            //cout<< "\nhora: " << hora << endl;
+            //cout<< "(pedidos[" << i << "].hora/100): " << (pedidos[i].hora/100) << endl;
+            if( (pedidos[i].hora/100) > hora){
+                //cout<< "Dentro de ' if( (pedidos[i].hora/100) < hora ) ' "<< endl;
+                if(cant_livianos || cant_medio || cant_pesados){
+                    print_listado(hora, cant_livianos, cant_medio, cant_pesados);
+                }
+                cant_livianos = 0;
+                cant_medio = 0;
+                cant_pesados = 0;
+            }
+        }
+    }
+    /*
+    for(int i = 0; i < cant_pedidos; i++){
+        int hora_del_pedido = (pedidos[i].hora/100);
+        if(hora_del_pedido == hora){
+            switch (pedidos[i].tipo_paquete){
+                case TIPO_PAQUETE_LIVIANO:
+                    cant_livianos++;
+                    break;
+                
+                case TIPO_PAQUETE_MEDIO:
+                    cant_medio++;
+                    break;
+
+                case TIPO_PAQUETE_PESADO:
+                    cant_pesados++;
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            print_listado(hora, cant_livianos, cant_medio, cant_pesados);
+            hora++;
+            cant_livianos = 0;
+            cant_medio = 0;
+            cant_pesados = 0;
+            switch (pedidos[i].tipo_paquete){
+                case TIPO_PAQUETE_LIVIANO:
+                    cant_livianos++;
+                    break;
+                
+                case TIPO_PAQUETE_MEDIO:
+                    cant_medio++;
+                    break;
+
+                case TIPO_PAQUETE_PESADO:
+                    cant_pesados++;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }*/
+    return;
 }
 
 int main (){
@@ -216,6 +328,9 @@ int main (){
     mostrar_pedidos(pedidos_a_atender, cant_pedidos_a_atender);
     cout << "\n********************** PEDIDOS RECHAZADOS **********************" << endl;
     mostrar_pedidos(pedidos_rechazados, cant_pedidos_rechazados);
+
+    cout << "\n********************** LISTA A ATENDER POR HORA **********************" << endl;
+    mostrar_listado_por_hora(pedidos_a_atender, cant_pedidos_a_atender);
 
     return 0;
 }
