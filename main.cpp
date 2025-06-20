@@ -1,4 +1,5 @@
-/*Alumno:Ignacio Ciccone.                    Fecha:19/06/2025
+// Alumno:Ignacio Ciccone.                    Fecha:19/06/2025
+/* Ejercicio 1
     1) Una agencia de reparto posee dos canales para recibir pedidos, uno es 
     la página web de la empresa y el otro un operador que atiende la línea 
     telefónica. La operatoria es que al finalizar el horario de toma de 
@@ -35,17 +36,6 @@
     Consideraciones: Los listados de ambos canales de atención se encuentran 
     ordenados en forma ascendente por hora de pedido.
     Restricciones: Solo se puede recorrer secuencialmente una vez cada vector
-
-    2) Realizar diagrama del procedimiento intersección que dados dos arreglos 
-    de entrada uno de N y otro de M elementos genere un nuevo arreglo de 
-    salida sólo con los elementos que  están en ambos conjuntos ordenado en 
-    forma ascendente. 
-    Ejemplo: vecA = {0, 2, 4, 9} y vecB = {9, 5, 3, 2, 1) => vecC = {2, 9} 
-
-    Consideraciones: Ambos arreglos de entrada están ordenados pero el primero 
-    en forma ascendente y el segundo en forma descendente. Ambos son conjuntos 
-    sin elementos repetidos 
-    Restricciones: Sólo se puede recorrer una vez cada vector de entrada
  */
 
 const int TIPO_PAQUETE_LIVIANO = 1;
@@ -274,7 +264,7 @@ void mostrar_listado_por_hora(PEDIDO pedidos[], int cant_pedidos){
     return;
 }
 
-int main (){
+void ejercicio1(){
     PEDIDO pedidos_web[MAX_CANT_PEDIDOS];
     PEDIDO pedidos_telefonicos[MAX_CANT_PEDIDOS];
     PEDIDO pedidos_a_atender[MAX_CANT_PEDIDOS];
@@ -291,7 +281,7 @@ int main (){
     mostrar_pedidos(pedidos_telefonicos, cant_pedidos_telefonicos);
 
     cout << "\n********************* UNIFICANDO PEDIDOS *********************" <<endl;
-    unificacion_de_listados(pedidos_web, pedidos_telefonicos, pedidos_a_atender, pedidos_rechazados, cant_pedidos_web , cant_pedidos_telefonicos, cant_pedidos_a_atender, cant_pedidos_rechazados);
+    unificacion_de_listados(pedidos_web, pedidos_telefonicos, pedidos_a_atender, pedidos_rechazados, cant_pedidos_web, cant_pedidos_telefonicos, cant_pedidos_a_atender, cant_pedidos_rechazados);
     cout << "\n********************** PEDIDOS A ATENDER **********************" << endl;
     mostrar_pedidos(pedidos_a_atender, cant_pedidos_a_atender);
     cout << "\n********************** PEDIDOS RECHAZADOS **********************" << endl;
@@ -299,6 +289,63 @@ int main (){
 
     cout << "\n********************** LISTA A ATENDER POR HORA **********************" << endl;
     mostrar_listado_por_hora(pedidos_a_atender, cant_pedidos_a_atender);
+
+    return;
+}
+
+/*  Ejercicio2:
+    2) Realizar diagrama del procedimiento intersección que dados dos arreglos 
+    de entrada uno de N y otro de M elementos genere un nuevo arreglo de 
+    salida sólo con los elementos que  están en ambos conjuntos ordenado en 
+    forma ascendente. 
+    Ejemplo: vecA = {0, 2, 4, 9} y vecB = {9, 5, 3, 2, 1) => vecC = {2, 9} 
+
+    Consideraciones: Ambos arreglos de entrada están ordenados pero el primero 
+    en forma ascendente y el segundo en forma descendente. Ambos son conjuntos 
+    sin elementos repetidos 
+    Restricciones: Sólo se puede recorrer una vez cada vector de entrada
+*/
+
+int interseccion (int a[], int len_a, int b[], int len_b, int res[]){
+    int len_c=0;
+    int i=0, j=(len_b-1), k=0;
+
+    while(i<len_a && j>=0){
+        if(a[i] == b[j]){
+            res[k] = a[i];
+            k++;
+            i++;
+            j--;
+        } else if(a[i] > b[j]){
+            j--;
+        } else {
+            i++;
+        }
+    }
+
+    len_c = k;
+    return len_c;
+}
+
+void ejercicio2 (){
+    int a[] = {0,1,2,4,5,9, 10, 11, 12, 13,14,15}, b[] = {17,14,9,5,3,2,1};
+    int len_a = 12, len_b = 7, len_c;
+    int res[len_b]; 
+    //Lo inicializo del menor largo de array, ya que en la intersección el maximo de numeros que puede llegar a albergar es el del array mas corto.
+    
+    len_c = interseccion(a,len_a,b,len_b,res);
+
+    cout << "len_c: " << len_c << endl;
+
+    for(int i=0;i<len_c;i++){
+        cout << "res[" << i << "]: " << res[i] << endl;
+    }
+    return;
+}
+
+int main (){
+    //ejercicio1();
+    ejercicio2();
 
     return 0;
 }
