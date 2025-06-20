@@ -1,5 +1,4 @@
-/**
- * Alumno:Ignacio Ciccone.                    Fecha:19/06/2025
+/*Alumno:Ignacio Ciccone.                    Fecha:19/06/2025
     1) Una agencia de reparto posee dos canales para recibir pedidos, uno es 
     la página web de la empresa y el otro un operador que atiende la línea 
     telefónica. La operatoria es que al finalizar el horario de toma de 
@@ -214,11 +213,6 @@ void print_datos_finales (int cant_livianos, int cant_medio, int cant_pesados, i
     cout << "HORA CON MENOS ENVIOS: " << hora_menos_envio << endl;
     return;
 }
-/*
-    d. Al finalizar el listado imprimir los siguientes datos de reporte:
-    TOTAL LIVIANOS: 99 	TOTAL MEDIO: 99	TOTAL PESADOS: 99
-    HORA CON MENOS ENVIOS: 13
-*/
 
 void mostrar_listado_por_hora(PEDIDO pedidos[], int cant_pedidos){
     int cant_livianos = 0, cant_medio = 0, cant_pesados = 0;
